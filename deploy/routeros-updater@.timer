@@ -1,0 +1,11 @@
+[Unit]
+Description=Check/resume RouterOS updater for %i every 30 minutes
+
+[Timer]
+OnCalendar=*-*-* *:00,30:00
+RandomizedDelaySec=120
+Persistent=true
+Unit=routeros-updater@%i.service
+
+[Install]
+WantedBy=timers.target

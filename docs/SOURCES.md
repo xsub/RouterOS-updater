@@ -1,0 +1,15 @@
+# Upstream references
+
+- [Upgrade procedure and HTTPS since7.23](https://help.mikrotik.com/docs/spaces/ROS/pages/328142/Upgrading+and+installation)
+- [Scheduler update-check example](https://manual.mikrotik.com/docs/system-information-and-utilities/scheduler/)
+- [Native backup encryption](https://manual.mikrotik.com/docs/cli-reference/system/backup/save/)
+- [Exports and sensitive fields](https://help.mikrotik.com/docs/spaces/ROS/pages/328155/Configuration+Management)
+- [RouterBOARD firmware and reboot behavior](https://help.mikrotik.com/docs/spaces/ROS/pages/40992878/RouterBOARD)
+- [Package available/disabled flags](https://manual.mikrotik.com/docs/cli-reference/system/package/)
+- [Updater protocol and certificate settings](https://manual.mikrotik.com/docs/cli-reference/system/package/update/)
+- [Scripting and error handling](https://manual.mikrotik.com/docs/developer-guides/scripting/)
+- [SSH exit-status limitations](https://manual.mikrotik.com/docs/management-tools/ssh/)
+- [Vendor SFTP example](https://help.mikrotik.com/docs/spaces/ROS/pages/172294200/Container+-+freeradius+server)
+- [Paramiko SSHClient and RejectPolicy](https://docs.paramiko.org/en/stable/api/client.html)
+- [Paramiko SFTP](https://docs.paramiko.org/en/stable/api/sftp.html)
+- [Paramiko compatibility changes](https://www.paramiko.org/changelog.html)

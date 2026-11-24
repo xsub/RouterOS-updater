@@ -1,0 +1,6 @@
+include requirements.in requirements.lock build-requirements.in build-requirements.lock
+recursive-include deploy *
+recursive-include examples *.toml
+recursive-include docs *.md
+recursive-include tools *.py
+recursive-include tests *.py

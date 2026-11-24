@@ -1,0 +1,41 @@
+[Unit]
+Description=Verified RouterOS update for %i
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+User=routeros-updater
+Group=routeros-updater
+UMask=0077
+StateDirectory=routeros-updater
+StateDirectoryMode=0700
+LoadCredential=ssh-key:/etc/routeros-updater/%i.ssh-key
+LoadCredential=backup-password:/etc/routeros-updater/%i.backup-password
+ExecStart=/opt/routeros-updater/venv/bin/routeros-updater --config /etc/routeros-updater/%i.toml run
+TimeoutStartSec=55min
+Restart=no
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+LimitCORE=0
+
+[Install]
+WantedBy=multi-user.target

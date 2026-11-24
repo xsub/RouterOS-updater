@@ -1,0 +1,67 @@
+# Fictional example. Replace every address and identity with your own values.
+name = "router1"
+data_dir = "/var/lib/routeros-updater"
+backup_password_file = "credential:backup-password"
+# webhook_url = "https://monitor.example.test/router-events"
+# webhook_token_file = "credential:webhook-token"
+
+[ssh]
+host = "10.42.0.1"
+port = 22
+user = "routeros-updater"
+key_file = "credential:ssh-key"
+known_hosts = "/etc/routeros-updater/router1.known_hosts"
+expected_serial = "REPLACE_WITH_VERIFIED_ROUTER_SERIAL"
+expected_model = ""
+timeout = 15
+
+[policy]
+channel = "long-term"
+auto_apply = false
+allow_minor = true
+minimum_observation_hours = 72
+min_free_bytes = 33554432
+min_free_memory = 33554432
+min_uptime_seconds = 300
+download_timeout = 900
+reboot_timeout = 600
+health_timeout = 180
+poll_seconds = 5
+plan_ttl_seconds = 3600
+window_timezone = "UTC"
+# Monday=0, Sunday=6. Overnight windows belong to their starting day.
+window_days = [6]
+window_start = "03:00"
+window_end = "05:00"
+backup_keep = 20
+allowed_versions = []
+denied_versions = []
+
+[[checks]]
+name = "management-service"
+kind = "tcp"
+host = "10.42.0.10"
+port = 443
+timeout = 5
+
+[[checks]]
+name = "file-service"
+kind = "tcp"
+host = "10.42.0.20"
+port = 445
+timeout = 5
+
+[[checks]]
+name = "local-dns"
+kind = "dns"
+host = "10.42.0.53"
+dns_name = "service.example.test"
+expected_ip = "10.42.0.10"
+timeout = 5
+
+[[checks]]
+name = "internet-https"
+kind = "https"
+url = "https://example.com/"
+expected_status = 200
+timeout = 10

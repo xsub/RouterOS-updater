@@ -1,0 +1,42 @@
+name: validate
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install locked runtime and local package
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --require-hashes -r requirements.lock -r build-requirements.lock
+          .venv/bin/pip install --no-build-isolation --no-deps -e .
+          .venv/bin/pip install pytest pytest-cov ruff build pip-audit
+      - name: Tests and static checks
+        run: |
+          .venv/bin/ruff check src tests tools
+          .venv/bin/ruff format --check src tests tools
+          .venv/bin/python tools/check_public_tree.py
+          .venv/bin/python -m pytest --cov=routeros_updater --cov-report=term-missing
+          sh -n deploy/install.sh
+          sh -n deploy/routeros-updaterctl
+      - name: Build artifacts and audit dependencies
+        run: |
+          .venv/bin/python -m build --no-isolation
+          .venv/bin/pip-audit -r requirements.lock --require-hashes --strict
+      - name: Verify systemd unit syntax
+        if: matrix.python == '3.11'
+        run: |
+          sudo install -D -m 0755 /bin/true /opt/routeros-updater/venv/bin/routeros-updater
+          systemd-analyze verify deploy/routeros-updater@.service deploy/routeros-updater@.timer

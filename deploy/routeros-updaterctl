@@ -1,0 +1,33 @@
+#!/bin/sh
+# Run a manual command with the same credentials and service user as the timer.
+set -eu
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Run this helper with sudo." >&2
+    exit 1
+fi
+router=${1:?Usage: routeros-updaterctl ROUTER COMMAND [arguments]}
+shift
+case "$router" in
+    ''|-*|*[!a-zA-Z0-9_-]*) echo "Invalid router name" >&2; exit 1 ;;
+esac
+case "${1-}" in
+    check|plan|inspect|status|doctor|run|apply|reconcile) ;;
+    *) echo "Unknown command" >&2; exit 1 ;;
+esac
+exec systemd-run --quiet --wait --pipe --collect \
+    --unit="routeros-updater-manual-$router-$$" \
+    --property=User=routeros-updater \
+    --property=Group=routeros-updater \
+    --property=UMask=0077 \
+    --property=StateDirectory=routeros-updater \
+    --property=StateDirectoryMode=0700 \
+    --property="LoadCredential=ssh-key:/etc/routeros-updater/$router.ssh-key" \
+    --property="LoadCredential=backup-password:/etc/routeros-updater/$router.backup-password" \
+    --property=NoNewPrivileges=yes \
+    --property=ProtectSystem=strict \
+    --property=ProtectHome=yes \
+    --property=PrivateTmp=yes \
+    --property=LimitCORE=0 \
+    --property=TimeoutStartSec=55min \
+    /opt/routeros-updater/venv/bin/routeros-updater \
+    --config "/etc/routeros-updater/$router.toml" "$@"
